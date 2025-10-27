@@ -8,7 +8,7 @@ cover-img:
 ---
 
 
-# ExpView
+# ExpView2
 
 **ExpView** is a terminal-based analytics and visualization tool inspired by Excel.  
 Designed for developers and data scientists, it displays pandas DataFrames directly in the terminal using the **Curses** library — with fast navigation, shortcut keys, and instant refresh.
