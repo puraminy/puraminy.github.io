@@ -1,3 +1,13 @@
+---
+title: NodCast
+layout: page
+bigimg:
+  - /assets/images/nodcast-slide1.png
+  - /assets/images/nodcast-slide2.png
+  - /assets/images/nodcast-slide3.png
+---
+
+
 # ExpView
 
 **ExpView** is a terminal-based analytics and visualization tool inspired by Excel.  
