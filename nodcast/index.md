@@ -1,7 +1,7 @@
 ---
 layout: page
 title: NodCast
-subtitle: A keyboard-based research reader and article manager
+subtitle: Study Smarter
 cover-img: ["assets/images/nodcast-slide1.png",
             "assets/images/nodcast-slide2.png",
             "assets/images/nodcast-slide3.png"]
