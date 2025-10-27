@@ -1,7 +1,7 @@
 ---
 title: ExpView
 layout: page
-bigimg:
+cover-img:
   - /assets/images/nodcast-slide1.png
   - /assets/images/nodcast-slide2.png
   - /assets/images/nodcast-slide3.png
