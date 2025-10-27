@@ -1,14 +1,16 @@
 ---
-title: ExpView
 layout: page
-cover-img:
-  - /assets/images/nodcast-slide1.png
-  - /assets/images/nodcast-slide2.png
-  - /assets/images/nodcast-slide3.png
+title: ExpView
+subtitle: A keyboard-based research reader and article manager
+cover-img: ["assets/images/expview-slide1.png",
+            "assets/images/expview-slide2.png",
+            "assets/images/expview-slide3.png"]
+gh-repo: puraminy/expview
+gh-badge: [star, fork, watch]
+full-width: true
 ---
 
-
-# ExpView2
+# ExpView
 
 **ExpView** is a terminal-based analytics and visualization tool inspired by Excel.  
 Designed for developers and data scientists, it displays pandas DataFrames directly in the terminal using the **Curses** library — with fast navigation, shortcut keys, and instant refresh.
