@@ -1,4 +1,4 @@
-## What is NodCast
+## NodCast
 
 Using NodCast you can search, study and manage scientific papers or any other article.
 
