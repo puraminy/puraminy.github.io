@@ -3,11 +3,10 @@ layout: page
 title: ExpView
 subtitle: A terminal-based analytics and visualization tool for datasets.
 cover-img: ["assets/images/expview-slide1.png",
-            "assets/images/expview-slide2.png",
             "assets/images/expview-slide3.png"]
 gh-repo: puraminy/expview
 gh-badge: [star, fork, watch]
-full-width: true
+full-width: false
 ---
 
 # ExpView
