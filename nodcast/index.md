@@ -64,22 +64,12 @@ You can edit or create your own nods at any time. Custom nods allow NodCast to b
 
 ## How NodCast uses these feedbacks?
 
-Beyond nods, you can also enter questions while reading each segment.
-
-**Nods:**  
-- `I see!`  
-- `didn't get`  
-
----
-
-## So nods become a feedback signal to the system itself?
-
 NodCast learns which parts engage you and which parts confuse you by observing your nods and questions. These signals are shared with article creators. Articles are also scored, and you can browse top-rated ones. Future versions may adapt pacing, difficulty, or provide targeted explanations based on your nod history.
 
 **Nods:**  
-- `@I see!`  
-- `@I see!`  
 - `didn't get`  
+- `I see!`  
+- `@fantastic!`  
 
 ---
 
