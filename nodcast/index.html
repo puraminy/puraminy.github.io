@@ -162,7 +162,7 @@
   }
 
   // Initial render
-  function init(){
+  async function init(){
     // doc = loadFromYAML(defaultYAML);
     doc = await loadDefaultYAML();
     if(!doc){ document.getElementById('contentRoot').innerText = 'Failed to parse document'; return; }
