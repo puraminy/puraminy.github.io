@@ -84,7 +84,7 @@
   <script>
   async function loadDefaultYAML() {
       try {
-          const response = await fetch("README.nct");
+          const response = await fetch("README.yaml");
           if (!response.ok) {
               console.warn("intro.yaml not found");
               return {};
