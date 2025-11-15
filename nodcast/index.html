@@ -1,60 +1,575 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Introducing NodCast: A Text-Based Reading Experience</title>
+  <meta charset="utf-8">
+  <title>NodCast Viewer</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root{
+      --bg:#0f1720; --card:#0b1220; --muted:#9aa4b2; --accent:#4caf50; --warn:#ff8a00;
+      --glass: rgba(255,255,255,0.03);
+      color-scheme: dark;
+    }
+    html,body{height:100%;margin:0;font-family:Inter,Segoe UI,system-ui,-apple-system,Roboto,"Helvetica Neue",Arial;}
+    body{background:linear-gradient(180deg,#07111b 0%, #04101b 100%); color:#e6eef6;}
+    .app{display:flex;gap:16px;max-width:1100px;margin:28px auto;padding:20px;}
+    .left{width:320px;flex-shrink:0;background:var(--card);border-radius:12px;padding:12px;box-shadow:0 6px 24px rgba(2,6,23,0.6)}
+    .main{flex:1;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px;padding:20px;min-height:60vh;}
+    h1{font-size:20px;margin:0 0 14px 0}
+    .meta{font-size:13px;color:var(--muted);margin-bottom:12px}
+    .section-list{max-height:50vh;overflow:auto;padding-right:8px}
+    .sec{padding:8px;border-radius:8px;margin:6px 0;cursor:pointer}
+    .sec.active{background:rgba(76,175,80,0.08);border-left:4px solid var(--accent)}
+    .sentence{padding:12px;border-radius:8px;margin:10px 0;background:var(--glass)}
+    .sentence.selected{outline:2px solid rgba(76,175,80,0.12)}
+    .sentence p{margin:0;font-size:15px;line-height:1.5;color:#dceffb}
+    .nodelist{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .chip{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.03);cursor:pointer;font-size:13px}
+    .chip.affirm{border-color:rgba(76,175,80,0.14)}
+    .chip.refl{border-color:rgba(255,138,0,0.12)}
+    .chip.selected{box-shadow:0 6px 18px rgba(0,0,0,0.6);transform:translateY(-2px);border-width:1px}
+    .chip.affirm.selected{background:linear-gradient(90deg, rgba(76,175,80,0.12), rgba(76,175,80,0.06));color:var(--accent)}
+    .chip.refl.selected{background:linear-gradient(90deg, rgba(255,138,0,0.12), rgba(255,138,0,0.06));color:var(--warn)}
+    .controls{display:flex;gap:10px;align-items:center;margin-top:14px}
+    .btn{padding:8px 12px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);cursor:pointer}
+    .kbd{background:rgba(255,255,255,0.03);padding:2px 6px;border-radius:6px;border:1px solid rgba(255,255,255,0.02);font-size:12px}
+    .info{margin-top:12px;color:var(--muted);font-size:13px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    .history{margin-top:12px;font-size:13px;color:var(--muted);max-height:180px;overflow:auto}
+    .history .item{padding:6px;border-radius:6px;margin:6px 0;background:rgba(255,255,255,0.01);display:flex;justify-content:space-between}
+    textarea{width:100%;min-height:64px;border-radius:8px;padding:8px;background:transparent;color:inherit;border:1px dashed rgba(255,255,255,0.03)}
+    footer{font-size:12px;color:var(--muted);margin-top:12px}
+    .question-list{margin-top:10px}
+    .question{background:rgba(255,255,255,0.02);padding:8px;border-radius:8px;margin:6px 0;font-size:13px}
+    .help{font-size:13px;color:var(--muted);margin-top:10px}
+    @media(max-width:900px){.app{flex-direction:column;padding:12px}.left{width:100%}}
+  </style>
 </head>
 <body>
+  <div class="app" id="app">
+    <aside class="left">
+      <div class="topbar">
+        <h1 id="title">NodCast</h1>
+        <div class="kbd">viewer</div>
+      </div>
 
-<h1>Introducing NodCast: A Text-Based Reading Experience</h1>
+      <div class="meta" id="subtitle">Text based, keyboard friendly reading</div>
 
-<section>
-  <h2>What is NodCast?</h2>
-  <p>Before reading the document, press h to learn how to move between segments. Navigation mainly uses the arrow keys.</p>
-</section>
+      <div>
+        <strong>Sections</strong>
+        <div class="section-list" id="sectionList"></div>
+      </div>
 
-<section>
-  <h2>How does it do that?</h2>
-  <p>NodCast is built for focused reading. It supports readers in maintaining concentration and helps writers create coherent, deliberate articles.</p>
-</section>
+      <div style="margin-top:12px">
+        <strong>History</strong>
+        <div class="history" id="history"></div>
+      </div>
 
-<section>
-  <h2>What exactly are nods?</h2>
-  <p>Instead of passively scanning lines, you interact with each sentence through short written signals called nods.</p>
-</section>
+      <footer>
+        <div class="help">
+          Keys: <span class="kbd">↑</span> <span class="kbd">↓</span> navigate — <span class="kbd">←</span> reflect nod — <span class="kbd">→</span> affirm nod — <span class="kbd">:</span> comment — <span class="kbd">q</span> question
+        </div>
+      </footer>
+    </aside>
 
-<section>
-  <h2>What kinds of nods can I choose from?</h2>
-  <p>A nod is a quick written acknowledgment—similar to saying I see or hmm—but expressed in text rather than speech.</p>
-</section>
+    <main class="main">
+      <div id="contentRoot">
+        <!-- rendered dynamically -->
+      </div>
+    </main>
+  </div>
 
-<section>
-  <h2>Can I add custom nods?</h2>
-  <p>NodCast includes two broad types: affirming nods like I get it, and reflective ones like not sure or wait, what?</p>
-</section>
+  <!-- include js-yaml from CDN to parse YAML -->
+  <script src="https://unpkg.com/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+  <script>
+  // Embedded default nodcast YAML (exact content you provided)
+  const defaultYAML = `title: 'Introducing NodCast: A Text-Based Reading Experience'
+sections:
+- title: Introduction
+  fragments:
+  - id: ''
+    sents:
+    - id: ''
+      text: Before reading the document, press h to learn how to move between segments.
+        Navigation mainly uses the arrow keys.
+      nods:
+        affirmative:
+        - '@okay'
+        - I see!
+        reflective: []
+      questions:
+      - '@What is NodCast?'
+    - id: ''
+      text: NodCast is built for focused reading. It supports readers in maintaining
+        concentration and helps writers create coherent, deliberate articles.
+      nods:
+        affirmative:
+        - '@how?'
+        - interesting!
+        reflective:
+        - so what?
+      questions:
+      - '@How does it do that?'
+    - id: ''
+      text: Instead of passively scanning lines, you interact with each sentence through
+        short written signals called nods.
+      nods:
+        affirmative:
+        - I see!
+        reflective:
+        - '@nods?!'
+      questions:
+      - '@What exactly are nods?'
+    - id: ''
+      text: A nod is a quick written acknowledgment—similar to saying I see or hmm—but
+        expressed in text rather than speech.
+      nods:
+        affirmative:
+        - I see!
+        - well!
+        - '@interesting!'
+        reflective: []
+      questions:
+      - '@What kinds of nods can I choose from?'
+      - Why would written nods matter?
+      - How do they help comprehension?
+      - How do they change the reading experience?
+    - id: ''
+      text: 'NodCast includes two broad types: affirming nods like I get it, and reflective
+        ones like not sure or wait, what?'
+      nods:
+        affirmative:
+        - '@I see!'
+        reflective:
+        - what?
+      questions:
+      - '@Can I add custom nods?'
+    - id: ''
+      text: You can edit or create your own nods at any time. Custom nods allow NodCast
+        to better recognize and adapt to your reading style.
+      nods:
+        affirmative:
+        - I see!
+        reflective:
+        - didn't get
+      questions:
+      - '@Are there other types of feedbacks?'
+    - id: ''
+      text: Beyond nods, you can also enter questions while reading each segment.
+      nods:
+        affirmative:
+        - I see!
+        reflective:
+        - didn't get
+      questions:
+      - '@How NodCast uses thes feedbacks?'
+    - id: ''
+      text: NodCast learns which parts engage you and which parts confuse you by observing
+        your nods and questions. These signals are shared with article creators. Articles
+        are also scored, and you can browse top-rated ones. Future versions may adapt
+        pacing, difficulty, or provide targeted explanations based on your nod history.
+      nods:
+        affirmative:
+        - '@I see!'
+        - '@I see!'
+        reflective:
+        - didn't get
+      questions:
+      - '@So nods become a feedback signal to the system itself?'
+- title: End
+  fragments:
+  - id: ''
+    sents:
+    - id: ''
+      text: end
+      nods:
+        reflective:
+        - gave me something to think about
+        - thought-provoking piece
+        - a bit complex but worth it
+        affirmative:
+        - '@interesting article'
+        - learned something new
+        - gave me something to think about
+        - clear and well explained
+        - nice conclusion
+        - makes sense overall
+        - left me curious
+        - good summary
+      questions: []`;
 
-<section>
-  <h2>Are there other types of feedbacks?</h2>
-  <p>You can edit or create your own nods at any time. Custom nods allow NodCast to better recognize and adapt to your reading style.</p>
-</section>
+  // App state
+  let doc = null;         // parsed document
+  let flat = [];          // flat list of sentences with meta {sectionIndex, fragIndex, sentIndex, text, nods, questions}
+  let idx = 0;            // current sentence index in flat[]
+  const STORAGE_KEY = 'nodcast-selections-v1';
 
-<section>
-  <h2>How NodCast uses thes feedbacks?</h2>
-  <p>Beyond nods, you can also enter questions while reading each segment.</p>
-</section>
+  // Utilities
+  function flattenDocument(d){
+    const out = [];
+    if(!d.sections) return out;
+    d.sections.forEach((sec, si) => {
+      const fragments = sec.fragments || [];
+      fragments.forEach((frag, fi) => {
+        const sents = frag.sents || [];
+        sents.forEach((s, sti) => {
+          out.push({
+            sectionTitle: sec.title || `Section ${si+1}`,
+            sectionIndex: si,
+            fragIndex: fi,
+            sentIndex: sti,
+            text: (s.text || '').replace(/\n\s+/g, ' ').trim(),
+            nods: s.nods || {affirmative: [], reflective: []},
+            questions: s.questions || [],
+            id: s.id || `${si}-${fi}-${sti}`,
+            comments: s.comments || []
+          });
+        });
+      });
+    });
+    return out;
+  }
 
-<section>
-  <h2>So nods become a feedback signal to the system itself?</h2>
-  <p>NodCast learns which parts engage you and which parts confuse you by observing your nods and questions. These signals are shared with article creators. Articles are also scored, and you can browse top-rated ones. Future versions may adapt pacing, difficulty, or provide targeted explanations based on your nod history.</p>
-</section>
+  function loadFromYAML(yamlText){
+    try{
+      const parsed = jsyaml.load(yamlText);
+      return parsed;
+    }catch(e){
+      console.error('YAML parse error', e);
+      return null;
+    }
+  }
 
-<h1>End</h1>
+  // Persistence
+  function loadSelections(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return {};
+      return JSON.parse(raw);
+    }catch(e){
+      console.warn('failed load selections', e);
+      return {};
+    }
+  }
+  function saveSelections(obj){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+    }catch(e){
+      console.warn('failed save', e);
+    }
+  }
 
-<section>
-  <h2>(no question heading available)</h2>
-  <p>end</p>
-</section>
+  // Initial render
+  function init(){
+    doc = loadFromYAML(defaultYAML);
+    if(!doc){ document.getElementById('contentRoot').innerText = 'Failed to parse document'; return; }
+    document.getElementById('title').innerText = doc.title || 'NodCast';
+    const subtitle = doc.sections && doc.sections.length ? doc.sections[0].title : 'NodCast';
+    document.getElementById('subtitle').innerText = subtitle;
 
+    flat = flattenDocument(doc);
+    // load selections (nods/comments/questions) into a map keyed by sentence id
+    const stored = loadSelections();
+    flat.forEach(item => {
+      const key = item.id;
+      item.selectedAffirm = stored[key] ? stored[key].affirm : null;
+      item.selectedRefl = stored[key] ? stored[key].refl : null;
+      item.comments = stored[key] ? stored[key].comments || [] : [];
+      item.questions = stored[key] ? stored[key].questions || [] : item.questions || [];
+    });
+
+    renderSidebar();
+    renderMain();
+    highlightSentence(0);
+    attachKeyboard();
+  }
+
+  function renderSidebar(){
+    const sroot = document.getElementById('sectionList');
+    sroot.innerHTML = '';
+    doc.sections.forEach((sec, si) => {
+      const div = document.createElement('div');
+      div.className = 'sec';
+      div.dataset.sectionIndex = si;
+      div.innerHTML = `<strong>${sec.title}</strong><div style="color:var(--muted);font-size:13px;margin-top:6px">${countSentencesInSection(si)} sentence(s)</div>`;
+      div.addEventListener('click', ()=> jumpToSection(si));
+      sroot.appendChild(div);
+    });
+    refreshHistory();
+  }
+
+  function countSentencesInSection(si){
+    return flat.filter(s => s.sectionIndex === si).length;
+  }
+
+  function jumpToSection(si){
+    // go to first sentence in that section
+    const target = flat.findIndex(s => s.sectionIndex === si);
+    if(target >= 0) highlightSentence(target);
+  }
+
+  function renderMain(){
+    const root = document.getElementById('contentRoot');
+    root.innerHTML = '';
+    const titleEl = document.createElement('h1');
+    titleEl.textContent = doc.title || 'NodCast';
+    root.appendChild(titleEl);
+
+    // render each sentence as a block
+    flat.forEach((s, i) => {
+      const secBlock = document.createElement('div');
+      secBlock.className = 'sentence';
+      secBlock.id = `sent-${i}`;
+
+      const meta = document.createElement('div');
+      meta.style.fontSize='12px';
+      meta.style.color='var(--muted)';
+      meta.style.marginBottom='8px';
+      meta.textContent = `${s.sectionTitle} — sentence ${s.sentIndex+1}`;
+      secBlock.appendChild(meta);
+
+      const p = document.createElement('p');
+      p.textContent = s.text;
+      secBlock.appendChild(p);
+
+      // nod chips
+      const nodContainer = document.createElement('div');
+      nodContainer.className = 'nodelist';
+
+      // affirmative
+      (s.nods && s.nods.affirmative ? s.nods.affirmative : []).forEach((n, ai) => {
+        const chip = document.createElement('div');
+        chip.className = 'chip affirm';
+        chip.textContent = n;
+        chip.dataset.type = 'affirm';
+        chip.dataset.value = n;
+        chip.addEventListener('click', ()=> selectNod(i, 'affirm', n));
+        if(s.selectedAffirm === n) chip.classList.add('selected');
+        nodContainer.appendChild(chip);
+      });
+
+      // reflective
+      (s.nods && s.nods.reflective ? s.nods.reflective : []).forEach((n, ri) => {
+        const chip = document.createElement('div');
+        chip.className = 'chip refl';
+        chip.textContent = n;
+        chip.dataset.type = 'refl';
+        chip.dataset.value = n;
+        chip.addEventListener('click', ()=> selectNod(i, 'refl', n));
+        if(s.selectedRefl === n) chip.classList.add('selected');
+        nodContainer.appendChild(chip);
+      });
+
+      secBlock.appendChild(nodContainer);
+
+      // questions
+      const qTitle = document.createElement('div');
+      qTitle.style.marginTop='8px';
+      qTitle.style.color='var(--muted)';
+      qTitle.textContent = 'Questions:';
+      secBlock.appendChild(qTitle);
+
+      const qList = document.createElement('div');
+      qList.className = 'question-list';
+      (s.questions || []).forEach(q => {
+        const qi = document.createElement('div');
+        qi.className = 'question';
+        qi.textContent = q;
+        qList.appendChild(qi);
+      });
+      secBlock.appendChild(qList);
+
+      // comments
+      const cTitle = document.createElement('div');
+      cTitle.style.marginTop='8px';
+      cTitle.style.color='var(--muted)';
+      cTitle.textContent = 'Comments:';
+      secBlock.appendChild(cTitle);
+
+      const cList = document.createElement('div');
+      cList.className = 'question-list';
+      (s.comments || []).forEach(c => {
+        const ci = document.createElement('div');
+        ci.className = 'question';
+        ci.textContent = c;
+        cList.appendChild(ci);
+      });
+      secBlock.appendChild(cList);
+
+      // controls per sentence (clickable action)
+      const controls = document.createElement('div');
+      controls.className = 'controls';
+      const btnComment = document.createElement('button');
+      btnComment.className='btn';
+      btnComment.textContent='Add comment (:)';
+      btnComment.onclick = ()=> promptComment(i);
+      const btnQuestion = document.createElement('button');
+      btnQuestion.className='btn';
+      btnQuestion.textContent='Add question (q)';
+      btnQuestion.onclick = ()=> promptQuestion(i);
+      controls.appendChild(btnComment);
+      controls.appendChild(btnQuestion);
+      secBlock.appendChild(controls);
+
+      root.appendChild(secBlock);
+    });
+  }
+
+  function refreshHistory(){
+    const histRoot = document.getElementById('history');
+    histRoot.innerHTML = '';
+    // show last 12 selections
+    const recent = [];
+    flat.forEach((s,i) => {
+      if(s.selectedAffirm || s.selectedRefl || (s.comments && s.comments.length) || (s.questions && s.questions.length)){
+        recent.push({i, s});
+      }
+    });
+    recent.slice(-12).reverse().forEach(r => {
+      const d = document.createElement('div');
+      d.className = 'item';
+      const left = document.createElement('div');
+      left.innerHTML = `<div style="font-weight:600">${r.s.sectionTitle}</div><div style="font-size:13px;color:var(--muted)">${r.s.text.slice(0,80)}${r.s.text.length>80?'…':''}</div>`;
+      const right = document.createElement('div');
+      right.style.textAlign='right';
+      right.innerHTML = `<div style="font-size:13px;color:var(--muted)">${r.s.selectedAffirm||r.s.selectedRefl||''}</div><div style="font-size:12px;color:var(--muted)">${(r.s.comments||[]).length}c ${(r.s.questions||[]).length}q</div>`;
+      d.appendChild(left); d.appendChild(right);
+      d.addEventListener('click', ()=> highlightSentence(r.i));
+      histRoot.appendChild(d);
+    });
+  }
+
+  function highlightSentence(i){
+    if(i < 0) i = 0;
+    if(i >= flat.length) i = flat.length-1;
+    // remove old
+    const old = document.querySelector('.sentence.selected');
+    if(old) old.classList.remove('selected');
+    const el = document.getElementById(`sent-${i}`);
+    if(el) el.classList.add('selected');
+    idx = i;
+    // scroll into view (smooth)
+    el && el.scrollIntoView({block:'center', behavior:'smooth'});
+    // mark active section visually
+    const secElems = document.querySelectorAll('.sec');
+    secElems.forEach(e=> e.classList.remove('active'));
+    const secIndex = flat[i].sectionIndex;
+    const activeSec = document.querySelector(`.sec[data-section-index='${secIndex}']`);
+    if(activeSec) activeSec.classList.add('active');
+
+    // ensure chips selection matches state
+    syncChips(i);
+  }
+
+  function syncChips(i){
+    const s = flat[i];
+    const node = document.getElementById(`sent-${i}`);
+    if(!node) return;
+    const chips = node.querySelectorAll('.chip');
+    chips.forEach(chip => {
+      chip.classList.remove('selected');
+      const t = chip.dataset.type === 'affirm' ? 'affirm' : 'refl';
+      if(t === 'affirm' && s.selectedAffirm && chip.dataset.value === s.selectedAffirm) chip.classList.add('selected');
+      if(t === 'refl' && s.selectedRefl && chip.dataset.value === s.selectedRefl) chip.classList.add('selected');
+    });
+  }
+
+  function selectNod(sentenceIndex, type, value){
+    const s = flat[sentenceIndex];
+    if(type === 'affirm'){
+      s.selectedAffirm = (s.selectedAffirm === value) ? null : value; // toggle
+      if(s.selectedAffirm) s.selectedRefl = null; // mutually exclusive (design choice)
+    }else{
+      s.selectedRefl = (s.selectedRefl === value) ? null : value;
+      if(s.selectedRefl) s.selectedAffirm = null;
+    }
+    persistSentence(s);
+    syncChips(sentenceIndex);
+    refreshHistory();
+  }
+
+  function persistSentence(s){
+    const stored = loadSelections();
+    stored[s.id] = { affirm: s.selectedAffirm || null, refl: s.selectedRefl || null, comments: s.comments || [], questions: s.questions || [] };
+    saveSelections(stored);
+  }
+
+  function promptComment(i){
+    const txt = prompt('Add a comment to this sentence (single line):');
+    if(txt && txt.trim()){
+      flat[i].comments = flat[i].comments || [];
+      flat[i].comments.push(txt.trim());
+      persistSentence(flat[i]);
+      // re-render only this sentence area (simple approach: re-render whole main)
+      renderMain();
+      highlightSentence(i);
+      refreshHistory();
+    }
+  }
+
+  function promptQuestion(i){
+    const txt = prompt('Add a question for this sentence (single line):');
+    if(txt && txt.trim()){
+      flat[i].questions = flat[i].questions || [];
+      flat[i].questions.push(txt.trim());
+      persistSentence(flat[i]);
+      renderMain();
+      highlightSentence(i);
+      refreshHistory();
+    }
+  }
+
+  // Keyboard handling: Up/Down/Left/Right/:/q/Enter
+  function attachKeyboard(){
+    window.addEventListener('keydown', (ev) => {
+      // ignore when focus in input/textarea
+      const tag = document.activeElement && document.activeElement.tagName;
+      if(tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+      if(ev.key === 'ArrowDown' || ev.key === 'd' || ev.key==='D'){
+        ev.preventDefault();
+        highlightSentence(idx+1);
+      }else if(ev.key === 'ArrowUp'){
+        ev.preventDefault();
+        highlightSentence(idx-1);
+      }else if(ev.key === 'ArrowRight'){
+        ev.preventDefault();
+        // cycle affirmative nods for current sentence
+        const s = flat[idx];
+        const arr = (s.nods && s.nods.affirmative) ? s.nods.affirmative : [];
+        if(arr.length === 0) return;
+        let cur = s.selectedAffirm ? arr.indexOf(s.selectedAffirm) : -1;
+        cur = (cur+1) % arr.length;
+        selectNod(idx, 'affirm', arr[cur]);
+      }else if(ev.key === 'ArrowLeft'){
+        ev.preventDefault();
+        // cycle reflective nods for current sentence
+        const s = flat[idx];
+        const arr = (s.nods && s.nods.reflective) ? s.nods.reflective : [];
+        if(arr.length === 0) return;
+        let cur = s.selectedRefl ? arr.indexOf(s.selectedRefl) : -1;
+        cur = (cur+1) % arr.length;
+        selectNod(idx, 'refl', arr[cur]);
+      }else if(ev.key === ':'){
+        ev.preventDefault();
+        promptComment(idx);
+      }else if(ev.key === 'q' || ev.key === 'Q'){
+        ev.preventDefault();
+        promptQuestion(idx);
+      }else if(ev.key === 'h' || ev.key === 'H'){
+        ev.preventDefault();
+        alert("Navigation help:\\n\\u2191 / \\u2193: move between sentences\\n\\u2190: cycle reflective nods\\n\\u2192: cycle affirmative nods\\n: add comment \\nq add question");
+      }else if(ev.key === 'Enter'){
+        ev.preventDefault();
+        highlightSentence(idx+1);
+      }
+    });
+  }
+
+  // Start
+  init();
+
+  </script>
 </body>
 </html>
 
