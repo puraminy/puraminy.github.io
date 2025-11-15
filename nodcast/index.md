@@ -2,9 +2,7 @@
 layout: page
 title: NodCast
 subtitle: Study Smarter
-cover-img: ["assets/images/nodcast-slide1.png",
-            "assets/images/nodcast-slide2.png",
-            "assets/images/nodcast-slide3.png"]
+cover-img: ["assets/images/nodcast-slide1.png"]
 gh-repo: puraminy/nodcast
 gh-badge: [star, fork, watch]
 full-width: true
