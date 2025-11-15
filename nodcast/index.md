@@ -10,102 +10,120 @@ gh-badge: [star, fork, watch]
 full-width: true
 ---
 
-## NodCast
+# NodCast
 
-Using NodCast you can search, study and manage scientific papers or any other article.
+NodCast is a text-based reading environment built for focused, concentrated study.  
+It blends keyboard-driven navigation with small textual reactions—*nods*—to create an active reading experience instead of passive scanning.
 
-However, the main goal of NodCast is to provide a new experience of study. The program is text-based and relies mainly on the keyboard. The program offers you the summaries of the articles when you want to concentrate on the purpose and main ideas within an article. You can also view the figures of the article in a browser. If you want to access the original article, you can download and open the original pdf file for each article.
+You can use NodCast to search, study, and manage scientific papers or any article.  
+It gives you summaries, lets you view figures in a browser, download PDFs, and annotate text fragments.  
+But the real innovation is how it turns reading into a dialogue.
 
-## Installation
+---
 
-Installation on linux:
-```
-pip install nodcast
-```
-### Installation on Windows
-For Windows you need to instll `windows-curses` package too, so use the following command:
-```
-pip install windows-curses nodcast
-```
+# The Idea Behind NodCast
 
-## Nods
-Nods are feedbacks you give to a sentence or a portion of text. It resembles the way you listen to the talks of a lecturer. You may admit what you've heard with 'okay, yes, etc.' or you may have a problem in getting the purpose of a sentence.
-When you open an article and start reading, NodCast automatically highlights the first sentence of an article. To expand the selection to more sentences press the `<Down>` arrow key. After selecting and reading a fragment of text (a paragraph or a certain number of sentences) you need to provide a Nod to be able to move to the next part. 
+<blockquote>
+Instead of passively scanning lines, you respond to each sentence with short written signals called <strong>nods</strong>.
+</blockquote>
 
-Example of nodes are:
+A nod is a quick acknowledgment—like “I see,” “hmm,” or “wait, what?”—typed instead of spoken.  
+NodCast uses these signals to understand what you grasp, what confuses you, and which parts matter.
 
-#### Positive nods: 
- - **okay**, when you have almost understood the purpose of a sentence or a fragment of the text
- - **I see!**, when you have completely understood the meaning and purpose of a sentence and you admit it.
- - **interesting!**, when you found the sentence or paragraph has a useful point.
- - **important!**, when you think it contains an important point that can be useful for you.
+Below is an example of how a selected nod can be highlighted visually:
 
-#### Negative nods: 
- - **okay so?**, when you understand the meaning of a sentence but you don't know its purpose and you are waiting for a complementary sentence or paragraph.
- - **didn't get, but okay**, when you didn't get the purpose or meaning of a sentence, but it's not currently important for you and you can continue.
- - **didn't get**, when you didn't get the purpose or meaning of a sentence, and you are confused.
- - **needs research** when there are some points or jargon in the sentence that needs to be researched.
-  
+<div style="padding:10px; border-left:4px solid #4CAF50; margin:10px 0; background:#f5fff5;">
+<strong>Selected nod:</strong> <span style="font-weight:bold; color:#2E7D32;">I see!</span>
+</div>
 
-### How to enter a nod
+Or a reflective nod:
 
-For positive nods, press the `<Right>` arrow key once or multiple times. They appear in order with each keystroke. For negative nods, do the same but with `<Left>` arrow key. After entering a nod press the `<Down>` arrow key to move to the next sentence. 
+<div style="padding:10px; border-left:4px solid #E65100; margin:10px 0; background:#fff7f0;">
+<strong>Selected nod:</strong> <span style="font-weight:bold; color:#bf360c;">wait, what?</span>
+</div>
 
-### Categorizing articles
+---
 
-After reading a part of an article, you can similarly enter a nod for the whole article, such as "important, interesting, review later, etc.". To do this, press `<left>` arrow key when the title is selected (press `<Home>` to select it). These nods shows your understanding of the article's content and are used to categorize articles under "reviewed articles" section. You can also add tags to articles, which are again used to manage the articles under "saved items" section. 
+# Q&A: What Are Nods?
 
+### **Q: What exactly is a nod?**  
+A nod is a short textual signal you give after reading a sentence or fragment—similar to replying “okay” or “I see” while listening to someone.
 
-## Comments and notes
+### **Q: Why written nods?**  
+Because writing them makes your reading active. A nod forces a tiny moment of metacognition: *Did I understand this? Did it matter? Did it confuse me?*
 
-Sometimes you want to add a comment to the selected fragment. To do this, press `:` (colon). Then you can write your comment in a bar that appears below the article. Hit `<Enter>` to enter the comment.
+### **Q: What types of nods can I use?**  
+NodCast uses two broad categories:
 
-### Multiple lines comments
+#### Affirming nods  
+These show understanding or interest.
 
-The bar shown below the article has the capacity of a single line note. If you want to add more lines, press right angle bracket (`>`) to insert a new line after the current line. You can then use arrow keys to navigate between the lines. Press left angle bracket (`<`) to remove a line. 
+<div style="margin-left:20px;">
+• <strong>okay</strong> – the point is mostly clear  
+• <strong>I see!</strong> – fully understood  
+• <strong>interesting!</strong> – contains a useful idea  
+• <strong>important!</strong> – significant, memorable  
+</div>
 
+#### Reflective nods  
+These show uncertainty or confusion.
 
-## other features
+<div style="margin-left:20px;">
+• <strong>okay so?</strong> – meaning clear, purpose unclear  
+• <strong>didn't get, but okay</strong> – unclear but not critical  
+• <strong>didn't get</strong> – unclear and confusing  
+• <strong>needs research</strong> – terminology or idea requires follow-up  
+</div>
 
-NodCast has many other features, which you can discover when you are working with it. Some hotkeys are listed below. They are accessible when you open an article. You can press `h` to see the list of available command in each section. 
+### **Q: Can I add my own nods?**  
+Yes. You can edit or create custom nods anytime. NodCast learns from your personal style.
 
-```
- Down)          expand the selection to the next sentence
- Right)         nod the selected sentences with the positie nods
- Right)         nod the selected sentences with the negative nods
- o)             download/open pdf file externally
- f)             list figures
- t)             tag the article
- d)             delete the external pdf file 
- w)             write the article into a file
- p)             select an output file format
- m)             change the color theme
- u)             reset comments and nods
- DEL)           remove the current nod from the selected sentence
- n)             filter the sentences by a nod
- +/-)           increase/decrease the width of the text
- :)             add a comment to the selected fragment
- k/j)           previous/next section
- l/;)           previous/next fragment
- PgUp/PgDown)   previous/next page
- h)             show this list
- q)             close
-```
+### **Q: How does NodCast use these nods?**  
+NodCast observes patterns in your nods and questions.  
+Creators of NodCast articles receive this feedback.  
+Articles are also scored based on user nods, and future versions may adapt reading speed or difficulty dynamically.
 
-###  working with menus and input boxes
+---
 
-Press `<Down>` or `<Up>` keys to navigate between the items of a menu. Optionally, you can press the hotkey associated with each item which is shown at the beginning of that option. Press `<Enter>` to open or run a menu item. Some items are input boxes like keywords for a search menu item. To escape an input box, you can either use `<Esc>` or simply `<Down>` key to move to the next item. Another useful key in the input box is left angle bracket (`<` which clears the entire input box.
+# How to Use NodCast
 
+### Navigating
 
-## Accessing website articles or opening a webpage
+When you open an article, NodCast highlights the first sentence.  
+Use:
 
-If you want to fetch and read the articles of a website, or a specific webpage, you can install `newspaper3k`. 
+- `<Down>` — expand your current selection  
+- `<Up>` — shrink / go back  
+- `<Right>` — cycle through **affirmative** nods  
+- `<Left>` — cycle through **reflective** nods  
+- `<Enter>` — confirm / open items  
+- `:` — add a comment  
+- `?` — add a question  
+- `n` — new segment  
+- `z` — toggle auto-mode  
+- `s` — read aloud (TTS)  
 
-```
-pip install newspaper3k
-```
+After selecting a fragment, you must enter a nod before moving on.
 
-Then, when you start NodCast, two new options are added to the main menu, namely `website articles` and `webpage`.  
- 
- 
+---
+
+# Working With Comments
+
+Press `:` to write a comment.  
+A bar appears, letting you type a single-line note.
+
+For multiline comments:
+
+- Press `>` to insert a new line  
+- Press `<` to remove a line  
+- Use arrows to navigate between lines  
+
+---
+
+# Categorizing Articles
+
+You can give nods to entire articles too (e.g., “important,” “review later”).  
+To do this: select the title (press `<Home>`), then use `<Left>`.
+
+Tags can also be added for better organization.
 
